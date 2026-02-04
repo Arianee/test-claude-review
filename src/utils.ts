@@ -51,3 +51,4 @@ export function isValidEmail(email: string): boolean {
 export function generateToken(): string {
   return Math.random().toString(36).substring(2);
 }
+// trigger rebuild
