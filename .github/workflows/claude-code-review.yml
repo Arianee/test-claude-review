@@ -25,20 +25,45 @@ jobs:
           model: claude-opus-4-20250514
           track_progress: true
           prompt: |
-            REPO: ${{ github.repository }}
-            PR NUMBER: ${{ github.event.pull_request.number }}
+            Review PR #${{ github.event.pull_request.number }} in ${{ github.repository }}.
 
-            Please review this pull request with a focus on:
-            - Code quality and best practices
-            - Potential bugs or issues
-            - Security implications
-            - Performance considerations
+            ## Output format (STRICT - follow exactly)
 
-            Note: The PR branch is already checked out in the current working directory.
+            Post ONE top-level comment with `gh pr comment` using this format:
 
-            Use `gh pr comment` for top-level feedback.
-            Use `mcp__github_inline_comment__create_inline_comment` to highlight specific code issues.
-            Only post GitHub comments - don't submit review text as messages.
+            ```markdown
+            ## Pull request overview
+
+            [1-2 sentences: what this PR does and why]
+
+            **Changes:**
+            - [Main change 1]
+            - [Main change 2]
+            - [etc - max 5 bullets]
+
+            <details>
+            <summary>Reviewed files</summary>
+
+            | File | Description |
+            | ---- | ----------- |
+            | path/to/file.ts | Brief description of changes |
+
+            </details>
+
+            [If issues found: "⚠️ X issues found - see inline comments"]
+            [If no issues: "✅ No issues found"]
+            ```
+
+            ## Inline comments
+            Use `mcp__github_inline_comment__create_inline_comment` for specific issues.
+            Be direct: state the problem and suggest a fix. No lengthy explanations.
+
+            ## Rules
+            - NO todo lists, NO checklists, NO "Final Verdict" sections
+            - NO repeating what files changed (the author knows)
+            - Overview must be under 50 words
+            - Max 5 bullet points in Changes
+            - Keep file descriptions to ~10 words each
 
           claude_args: |
             --allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)"
